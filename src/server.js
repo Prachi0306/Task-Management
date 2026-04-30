@@ -1,11 +1,13 @@
 const app = require('./app');
 const config = require('./config');
 const connectDB = require('./config/db');
+const { initRedis } = require('./config/redis');
 const logger = require('./utils/logger');
 const { initSocket } = require('./config/socket');
 
 const startServer = async () => {
   await connectDB();
+  await initRedis();
 
   const server = app.listen(config.port, () => {
     logger.info(`🚀 Server running in ${config.env} mode on port ${config.port}`);
