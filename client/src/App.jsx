@@ -4,6 +4,7 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import Dashboard from './pages/Dashboard';
 
 // A simple navigation header component to extract logic
 const Header = () => {
@@ -66,12 +67,7 @@ function App() {
 
               {/* Protected Routes */}
               <Route element={<ProtectedRoute />}>
-                <Route path="/dashboard" element={
-                  <div className="glass-panel" style={{ padding: '2rem' }}>
-                    <h2>Dashboard Placeholder</h2>
-                    <p>Protected content goes here.</p>
-                  </div>
-                } />
+                <Route path="/dashboard" element={<Dashboard />} />
               </Route>
             </Routes>
           </main>
