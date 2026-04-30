@@ -1,25 +1,26 @@
 const app = require('./app');
 const config = require('./config');
 const connectDB = require('./config/db');
+const logger = require('./utils/logger');
 
 const startServer = async () => {
   await connectDB();
 
   const server = app.listen(config.port, () => {
-    console.log(`🚀 Server running in ${config.env} mode on port ${config.port}`);
-    console.log(`📋 Health check: http://localhost:${config.port}/api/health`);
+    logger.info(`🚀 Server running in ${config.env} mode on port ${config.port}`);
+    logger.info(`📋 Health check: http://localhost:${config.port}/api/health`);
   });
 
   // Graceful shutdown
   const shutdown = (signal) => {
-    console.log(`\n${signal} received. Shutting down gracefully...`);
+    logger.info(`${signal} received. Shutting down gracefully...`);
     server.close(() => {
-      console.log('💤 Server closed');
+      logger.info('💤 Server closed');
       process.exit(0);
     });
 
     setTimeout(() => {
-      console.error('⚠️  Forced shutdown after timeout');
+      logger.error('⚠️  Forced shutdown after timeout');
       process.exit(1);
     }, 10000);
   };
@@ -28,7 +29,7 @@ const startServer = async () => {
   process.on('SIGINT', () => shutdown('SIGINT'));
 
   process.on('unhandledRejection', (reason) => {
-    console.error('❌ Unhandled Rejection:', reason);
+    logger.error('❌ Unhandled Rejection:', reason);
     shutdown('UNHANDLED_REJECTION');
   });
 };
