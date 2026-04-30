@@ -1,6 +1,8 @@
 const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpecs = require('./docs/swagger');
 const config = require('./config');
 const routes = require('./routes');
 const errorHandler = require('./middleware/errorHandler');
@@ -18,6 +20,11 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // ── API Routes ──
 app.use('/api', routes);
+
+// ── Swagger API Documentation ──
+if (process.env.NODE_ENV !== 'production') {
+  app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs, { explorer: true }));
+}
 
 // ── 404 Handler ──
 app.use((req, _res, next) => {
