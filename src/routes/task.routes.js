@@ -14,5 +14,7 @@ router.get('/', validate(taskValidator.listTasks), taskController.listTasks);
 router.get('/:id', validate(taskValidator.getTask), taskController.getTask);
 router.put('/:id', validate(taskValidator.updateTask), taskController.updateTask);
 router.delete('/:id', validate(taskValidator.deleteTask), taskController.deleteTask);
+router.patch('/:id/status', validate(taskValidator.updateStatus), taskController.updateStatus);
+router.get('/:id/activity', validate(taskValidator.getTask), taskController.getTaskActivity);
 
 module.exports = router;

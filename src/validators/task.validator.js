@@ -77,5 +77,17 @@ const listTasks = {
     limit: Joi.number().integer().min(1).max(100).default(10),
   }),
 };
+const updateStatus = {
+  params: Joi.object({
+    id: objectId.required(),
+  }),
+  body: Joi.object({
+    status: Joi.string().valid('To-Do', 'In-Progress', 'Completed').required()
+      .messages({
+        'any.required': 'Status is required',
+        'any.only': 'Status must be one of: To-Do, In-Progress, Completed',
+      }),
+  }),
+};
 
-module.exports = { createTask, updateTask, getTask, deleteTask, listTasks };
+module.exports = { createTask, updateTask, getTask, deleteTask, listTasks, updateStatus };

@@ -48,4 +48,23 @@ const deleteTask = catchAsync(async (req, res) => {
   });
 });
 
-module.exports = { createTask, getTask, listTasks, updateTask, deleteTask };
+const updateStatus = catchAsync(async (req, res) => {
+  const task = await taskService.updateStatus(req.params.id, req.user.id, req.user.role, req.body.status);
+
+  res.status(200).json({
+    success: true,
+    message: 'Task status updated successfully',
+    data: { task },
+  });
+});
+
+const getTaskActivity = catchAsync(async (req, res) => {
+  const activity = await taskService.getTaskActivity(req.params.id, req.user.id, req.user.role);
+
+  res.status(200).json({
+    success: true,
+    data: { activity },
+  });
+});
+
+module.exports = { createTask, getTask, listTasks, updateTask, deleteTask, updateStatus, getTaskActivity };

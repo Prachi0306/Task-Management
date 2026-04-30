@@ -3,6 +3,12 @@ const AppError = require('../utils/AppError');
 
 const PRIORITY_ORDER = { Low: 1, Medium: 2, High: 3 };
 
+const VALID_TRANSITIONS = {
+  'To-Do': ['In-Progress'],
+  'In-Progress': ['Completed', 'To-Do'],
+  'Completed': ['To-Do'],
+};
+
 class TaskService {
   async createTask(userId, taskData) {
     const task = await taskRepository.create({
@@ -84,13 +90,18 @@ class TaskService {
       throw AppError.forbidden('Only the task creator or an admin can update this task');
     }
 
+    // Validate status transition if status is being changed
+    if (updateData.status && updateData.status !== task.status) {
+      this._validateTransition(task.status, updateData.status);
+    }
+
     // Build activity log entries for changed fields
     const logEntries = [];
     for (const [field, newValue] of Object.entries(updateData)) {
       const oldValue = task[field];
       if (String(oldValue) !== String(newValue)) {
         logEntries.push({
-          action: 'updated',
+          action: field === 'status' ? 'status_change' : 'updated',
           field,
           oldValue,
           newValue,
@@ -124,6 +135,61 @@ class TaskService {
 
     await taskRepository.deleteById(taskId);
     return { message: 'Task deleted successfully' };
+  }
+
+  async updateStatus(taskId, userId, userRole, newStatus) {
+    const task = await taskRepository.findById(taskId);
+    if (!task) {
+      throw AppError.notFound('Task not found');
+    }
+
+    if (userRole !== 'admin' && task.createdBy._id.toString() !== userId && (!task.assignedTo || task.assignedTo._id.toString() !== userId)) {
+      throw AppError.forbidden('You do not have permission to change this task status');
+    }
+
+    if (task.status === newStatus) {
+      throw AppError.badRequest(`Task is already in ${newStatus} status`);
+    }
+
+    this._validateTransition(task.status, newStatus);
+
+    const update = {
+      status: newStatus,
+      $push: {
+        activityLog: {
+          action: 'status_change',
+          field: 'status',
+          oldValue: task.status,
+          newValue: newStatus,
+          changedBy: userId,
+          changedAt: new Date(),
+        },
+      },
+    };
+
+    return taskRepository.updateById(taskId, update);
+  }
+
+  async getTaskActivity(taskId, userId, userRole) {
+    const task = await taskRepository.findById(taskId);
+    if (!task) {
+      throw AppError.notFound('Task not found');
+    }
+
+    if (userRole !== 'admin' && task.createdBy._id.toString() !== userId && (!task.assignedTo || task.assignedTo._id.toString() !== userId)) {
+      throw AppError.forbidden('You do not have access to this task activity');
+    }
+
+    return task.activityLog.sort((a, b) => b.changedAt - a.changedAt);
+  }
+
+  _validateTransition(currentStatus, newStatus) {
+    const allowed = VALID_TRANSITIONS[currentStatus];
+    if (!allowed || !allowed.includes(newStatus)) {
+      throw AppError.badRequest(
+        `Invalid status transition: ${currentStatus} → ${newStatus}. Allowed: ${allowed ? allowed.join(', ') : 'none'}`
+      );
+    }
   }
 }
 
