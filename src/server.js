@@ -2,6 +2,7 @@ const app = require('./app');
 const config = require('./config');
 const connectDB = require('./config/db');
 const logger = require('./utils/logger');
+const { initSocket } = require('./config/socket');
 
 const startServer = async () => {
   await connectDB();
@@ -10,6 +11,8 @@ const startServer = async () => {
     logger.info(`🚀 Server running in ${config.env} mode on port ${config.port}`);
     logger.info(`📋 Health check: http://localhost:${config.port}/api/health`);
   });
+
+  initSocket(server);
 
   // Graceful shutdown
   const shutdown = (signal) => {

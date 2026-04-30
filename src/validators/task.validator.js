@@ -70,6 +70,11 @@ const listTasks = {
     status: Joi.string().valid('To-Do', 'In-Progress', 'Completed'),
     priority: Joi.string().valid('Low', 'Medium', 'High'),
     assignedTo: objectId,
+    createdBy: objectId,
+    dueDateStart: Joi.date().iso(),
+    dueDateEnd: Joi.date().iso().min(Joi.ref('dueDateStart')).messages({
+      'date.min': 'dueDateEnd must be after or equal to dueDateStart',
+    }),
     search: Joi.string().trim().max(200),
     sortBy: Joi.string().valid('createdAt', 'dueDate', 'priority', 'status').default('createdAt'),
     sortOrder: Joi.string().valid('asc', 'desc').default('desc'),

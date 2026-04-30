@@ -1,5 +1,6 @@
 const taskRepository = require('../repositories/task.repository');
 const AppError = require('../utils/AppError');
+const { emitToUser } = require('../config/socket');
 
 const PRIORITY_ORDER = { Low: 1, Medium: 2, High: 3 };
 
@@ -16,7 +17,16 @@ class TaskService {
       createdBy: userId,
     });
 
-    return taskRepository.findById(task._id);
+    const populatedTask = await taskRepository.findById(task._id);
+
+    if (populatedTask.assignedTo) {
+      emitToUser(populatedTask.assignedTo._id, 'task_assigned', {
+        message: 'You have been assigned a new task',
+        task: populatedTask,
+      });
+    }
+
+    return populatedTask;
   }
 
   async getTaskById(taskId, userId, userRole) {
@@ -33,7 +43,7 @@ class TaskService {
   }
 
   async listTasks(userId, userRole, queryParams) {
-    const { status, priority, assignedTo, search, sortBy, sortOrder, page, limit } = queryParams;
+    const { status, priority, assignedTo, createdBy, dueDateStart, dueDateEnd, search, sortBy, sortOrder, page, limit } = queryParams;
 
     const filter = {};
 
@@ -45,6 +55,14 @@ class TaskService {
     if (status) filter.status = status;
     if (priority) filter.priority = priority;
     if (assignedTo) filter.assignedTo = assignedTo;
+    if (createdBy) filter.createdBy = createdBy;
+
+    // Date range filtering
+    if (dueDateStart || dueDateEnd) {
+      filter.dueDate = {};
+      if (dueDateStart) filter.dueDate.$gte = new Date(dueDateStart);
+      if (dueDateEnd) filter.dueDate.$lte = new Date(dueDateEnd);
+    }
 
     // Full-text search on title and description
     if (search) {
@@ -120,6 +138,15 @@ class TaskService {
     }
 
     const updated = await taskRepository.updateById(taskId, update);
+
+    // Emit event if there are changes and the task has an assignee
+    if (logEntries.length > 0 && updated.assignedTo) {
+      emitToUser(updated.assignedTo._id, 'task_updated', {
+        message: `Task "${updated.title}" has been updated`,
+        task: updated,
+      });
+    }
+
     return updated;
   }
 
@@ -167,7 +194,25 @@ class TaskService {
       },
     };
 
-    return taskRepository.updateById(taskId, update);
+    const updatedTask = await taskRepository.updateById(taskId, update);
+
+    // Notify the assignee if someone else changed the status
+    if (updatedTask.assignedTo && updatedTask.assignedTo._id.toString() !== userId) {
+      emitToUser(updatedTask.assignedTo._id, 'task_status_changed', {
+        message: `Status of "${updatedTask.title}" changed to ${newStatus}`,
+        task: updatedTask,
+      });
+    }
+    
+    // Notify the creator if the assignee changed the status
+    if (updatedTask.createdBy._id.toString() !== userId) {
+      emitToUser(updatedTask.createdBy._id, 'task_status_changed', {
+        message: `Status of "${updatedTask.title}" changed to ${newStatus}`,
+        task: updatedTask,
+      });
+    }
+
+    return updatedTask;
   }
 
   async getTaskActivity(taskId, userId, userRole) {
