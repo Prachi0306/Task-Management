@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { taskService } from '../services/taskService';
+import { useSocket } from '../contexts/SocketContext';
 
 export const useTasks = (initialFilters = {}) => {
   const [tasks, setTasks] = useState([]);
@@ -7,6 +8,7 @@ export const useTasks = (initialFilters = {}) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [filters, setFilters] = useState(initialFilters);
+  const socket = useSocket();
 
   const fetchTasks = useCallback(async () => {
     setLoading(true);
@@ -25,6 +27,36 @@ export const useTasks = (initialFilters = {}) => {
   useEffect(() => {
     fetchTasks();
   }, [fetchTasks]);
+
+  // Real-time socket subscriptions
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleTaskAssigned = (data) => {
+      // Add the newly assigned task to the top of the list if it's not already there
+      setTasks((prev) => {
+        if (prev.find((t) => t._id === data.task._id)) return prev;
+        return [data.task, ...prev];
+      });
+    };
+
+    const handleTaskUpdated = (data) => {
+      // Update the specific task in the list
+      setTasks((prev) =>
+        prev.map((t) => (t._id === data.task._id ? data.task : t))
+      );
+    };
+
+    socket.on('task_assigned', handleTaskAssigned);
+    socket.on('task_updated', handleTaskUpdated);
+    socket.on('task_status_changed', handleTaskUpdated);
+
+    return () => {
+      socket.off('task_assigned', handleTaskAssigned);
+      socket.off('task_updated', handleTaskUpdated);
+      socket.off('task_status_changed', handleTaskUpdated);
+    };
+  }, [socket]);
 
   const addTask = async (taskData) => {
     try {
