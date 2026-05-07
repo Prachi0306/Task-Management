@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useTasks } from '../hooks/useTasks';
 import TaskBoard from '../components/TaskBoard';
+import StatsPanel from '../components/StatsPanel';
 import { Plus, Search, Filter } from 'lucide-react';
 
 const Dashboard = () => {
@@ -69,6 +70,9 @@ const Dashboard = () => {
           </button>
         </div>
       </div>
+
+      {/* Analytics Panel */}
+      <StatsPanel />
 
       {/* Main Board Area */}
       {error && (

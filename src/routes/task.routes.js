@@ -14,6 +14,11 @@ router.use(protect);
 // Task CRUD
 router.post('/', validate(taskValidator.createTask), taskController.createTask);
 router.get('/', validate(taskValidator.listTasks), taskController.listTasks);
+
+// Analytics (must be before /:id to avoid conflict)
+router.get('/stats', taskController.getStats);
+router.get('/stats/timeline', taskController.getTimeline);
+
 router.get('/:id', validate(taskValidator.getTask), taskController.getTask);
 router.put('/:id', validate(taskValidator.updateTask), taskController.updateTask);
 router.delete('/:id', validate(taskValidator.deleteTask), taskController.deleteTask);

@@ -31,4 +31,14 @@ export const taskService = {
     const response = await api.delete(`/tasks/${taskId}`);
     return response.data;
   },
+
+  fetchStats: async () => {
+    const response = await api.get('/tasks/stats');
+    return response.data.data.stats;
+  },
+
+  fetchTimeline: async () => {
+    const response = await api.get('/tasks/stats/timeline');
+    return response.data.data.timeline;
+  },
 };

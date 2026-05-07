@@ -264,6 +264,18 @@ class TaskService {
     return task.activityLog.sort((a, b) => b.changedAt - a.changedAt);
   }
 
+  async getStats(userId, userRole) {
+    const mongoose = require('mongoose');
+    const objectId = userRole === 'admin' ? null : new mongoose.Types.ObjectId(userId);
+    return taskRepository.getStats(objectId, userRole);
+  }
+
+  async getTimeline(userId, userRole) {
+    const mongoose = require('mongoose');
+    const objectId = userRole === 'admin' ? null : new mongoose.Types.ObjectId(userId);
+    return taskRepository.getTimeline(objectId, userRole);
+  }
+
   _validateTransition(currentStatus, newStatus) {
     const allowed = VALID_TRANSITIONS[currentStatus];
     if (!allowed || !allowed.includes(newStatus)) {

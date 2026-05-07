@@ -67,4 +67,22 @@ const getTaskActivity = catchAsync(async (req, res) => {
   });
 });
 
-module.exports = { createTask, getTask, listTasks, updateTask, deleteTask, updateStatus, getTaskActivity };
+const getStats = catchAsync(async (req, res) => {
+  const stats = await taskService.getStats(req.user.id, req.user.role);
+
+  res.status(200).json({
+    success: true,
+    data: { stats },
+  });
+});
+
+const getTimeline = catchAsync(async (req, res) => {
+  const timeline = await taskService.getTimeline(req.user.id, req.user.role);
+
+  res.status(200).json({
+    success: true,
+    data: { timeline },
+  });
+});
+
+module.exports = { createTask, getTask, listTasks, updateTask, deleteTask, updateStatus, getTaskActivity, getStats, getTimeline };
