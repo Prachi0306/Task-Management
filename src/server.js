@@ -16,7 +16,7 @@ const startServer = async () => {
 
   initSocket(server);
 
-  // Graceful shutdown
+
   const shutdown = (signal) => {
     logger.info(`${signal} received. Shutting down gracefully...`);
     server.close(() => {

@@ -2,7 +2,6 @@ import api from './api';
 
 export const taskService = {
   fetchTasks: async (filters = {}) => {
-    // Convert filter object to query string
     const params = new URLSearchParams();
     Object.entries(filters).forEach(([key, value]) => {
       if (value) params.append(key, value);

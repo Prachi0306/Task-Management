@@ -2,11 +2,6 @@ const { getRedisClient } = require('../config/redis');
 const logger = require('../utils/logger');
 
 class CacheService {
-  /**
-   * Get parsed value from cache
-   * @param {string} key 
-   * @returns {Object|null}
-   */
   async get(key) {
     try {
       const client = getRedisClient();
@@ -18,12 +13,6 @@ class CacheService {
     }
   }
 
-  /**
-   * Set value in cache with expiration
-   * @param {string} key 
-   * @param {Object} value 
-   * @param {number} ttlInSeconds Default 5 minutes
-   */
   async set(key, value, ttlInSeconds = 300) {
     try {
       const client = getRedisClient();
@@ -33,10 +22,6 @@ class CacheService {
     }
   }
 
-  /**
-   * Delete a specific key
-   * @param {string} key 
-   */
   async del(key) {
     try {
       const client = getRedisClient();
@@ -46,10 +31,6 @@ class CacheService {
     }
   }
 
-  /**
-   * Invalidate all keys matching a pattern (e.g. "tasks:*")
-   * @param {string} pattern 
-   */
   async invalidatePattern(pattern) {
     try {
       const client = getRedisClient();

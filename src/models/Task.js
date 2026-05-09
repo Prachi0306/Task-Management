@@ -80,7 +80,7 @@ const taskSchema = new mongoose.Schema(
   }
 );
 
-// Indexes for filtering, sorting, and search
+
 taskSchema.index({ createdBy: 1, status: 1 });
 taskSchema.index({ assignedTo: 1, status: 1 });
 taskSchema.index({ dueDate: 1 });

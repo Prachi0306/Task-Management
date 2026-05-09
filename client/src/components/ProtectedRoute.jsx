@@ -23,11 +23,9 @@ const ProtectedRoute = () => {
   }
 
   if (!user) {
-    // Redirect to login, but save the intended destination
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // User is authenticated, render the child routes
   return <Outlet />;
 };
 

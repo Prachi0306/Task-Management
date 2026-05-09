@@ -4,14 +4,14 @@ const config = require('./index');
 const logger = require('../utils/logger');
 
 let io;
-const userSockets = new Map(); // Maps userId to socket.id
+const userSockets = new Map();
 
 const initSocket = (server) => {
   io = new Server(server, {
     cors: config.cors,
   });
 
-  // Authentication middleware
+
   io.use((socket, next) => {
     const token = socket.handshake.auth?.token;
     if (!token) {

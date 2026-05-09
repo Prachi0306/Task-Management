@@ -19,7 +19,6 @@ describe('Auth API Integration Tests', () => {
     });
 
     it('should fail if email is already registered', async () => {
-      // Register first
       await request(app)
         .post('/api/auth/register')
         .send({
@@ -28,7 +27,7 @@ describe('Auth API Integration Tests', () => {
           password: 'Password1a',
         });
 
-      // Register again with the same email
+
       const res = await request(app)
         .post('/api/auth/register')
         .send({
@@ -56,7 +55,6 @@ describe('Auth API Integration Tests', () => {
 
   describe('POST /api/auth/login', () => {
     beforeEach(async () => {
-      // Seed a user for login tests
       await request(app)
         .post('/api/auth/register')
         .send({
@@ -103,7 +101,6 @@ describe('Auth API Integration Tests', () => {
 
   describe('GET /api/auth/me', () => {
     it('should return user profile with valid token', async () => {
-      // Register & capture token
       const regRes = await request(app)
         .post('/api/auth/register')
         .send({

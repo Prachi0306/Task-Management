@@ -12,7 +12,7 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
   
-  // Navigate back to where they came from, or dashboard
+  
   const from = location.state?.from?.pathname || '/dashboard';
 
   const handleSubmit = async (e) => {

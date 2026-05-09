@@ -5,7 +5,7 @@ describe('Task API Integration Tests', () => {
   let userToken;
   let taskId;
 
-  // Helper to register and return a token
+
   const createUser = async (name, email) => {
     const res = await request(app)
       .post('/api/auth/register')
@@ -50,7 +50,6 @@ describe('Task API Integration Tests', () => {
 
   describe('GET /api/tasks', () => {
     it('should list tasks for the user', async () => {
-      // Create a task first
       await request(app)
         .post('/api/tasks')
         .set('Authorization', `Bearer ${userToken}`)
@@ -148,7 +147,7 @@ describe('Task API Integration Tests', () => {
 
       expect(res.statusCode).toBe(200);
 
-      // Verify it's gone
+
       const getRes = await request(app)
         .get(`/api/tasks/${id}`)
         .set('Authorization', `Bearer ${userToken}`);

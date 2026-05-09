@@ -3,9 +3,9 @@ import { format } from 'date-fns';
 import { Calendar, AlertCircle, Clock, CheckCircle, Trash2 } from 'lucide-react';
 
 const priorityColors = {
-  Low: '#10b981',    // Emerald
-  Medium: '#f59e0b', // Amber
-  High: '#ef4444',   // Red
+  Low: '#10b981',
+  Medium: '#f59e0b',
+  High: '#ef4444',
 };
 
 const statusIcons = {
@@ -63,7 +63,7 @@ const TaskCard = ({ task, onStatusChange, onDelete }) => {
             </span>
           </div>
         ) : (
-          <div /> /* Spacer */
+          <div />
         )}
 
         <div className="flex gap-2">

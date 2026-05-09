@@ -12,34 +12,26 @@ const { generalLimiter } = require('./middleware/rateLimiter');
 
 const app = express();
 
-// ── Security Middleware ──
 app.use(helmet());
 app.use(cors(config.cors));
 
-// ── Body Parsers ──
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// ── Query Sanitization ──
 app.use(hpp());
 
-// ── Rate Limiting ──
 app.use('/api', generalLimiter);
 
-// ── API Routes ──
 app.use('/api', routes);
 
-// ── Swagger API Documentation ──
 if (process.env.NODE_ENV !== 'production') {
   app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs, { explorer: true }));
 }
 
-// ── 404 Handler ──
 app.use((req, _res, next) => {
   next(AppError.notFound(`Route ${req.method} ${req.originalUrl} not found`));
 });
 
-// ── Global Error Handler ──
 app.use(errorHandler);
 
 module.exports = app;

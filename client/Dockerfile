@@ -1,23 +1,18 @@
-# ── Stage 1: Build the Vite app ──
 FROM node:20-alpine AS builder
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 COPY . .
 
-# Set API URL for production build
 ARG VITE_API_URL=http://localhost:5000/api
 ENV VITE_API_URL=$VITE_API_URL
 
 RUN npm run build
 
-# ── Stage 2: Serve with Nginx ──
 FROM nginx:alpine AS runner
 
-# Copy built assets
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Custom nginx config for SPA routing
 RUN echo 'server { \
     listen 80; \
     server_name _; \

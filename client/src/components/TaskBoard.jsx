@@ -18,7 +18,7 @@ const COLUMNS = [
   { id: 'Completed', title: 'Completed', color: 'var(--status-completed)' },
 ];
 
-// Draggable wrapper for each task card
+
 const DraggableTask = ({ task, onStatusChange, onDelete }) => {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: task._id,
@@ -39,7 +39,7 @@ const DraggableTask = ({ task, onStatusChange, onDelete }) => {
   );
 };
 
-// Droppable column
+
 const DroppableColumn = ({ column, tasks, onStatusChange, onDelete, isOver }) => {
   const { setNodeRef } = useDroppable({ id: column.id });
   const [expanded, setExpanded] = useState(false);
@@ -61,7 +61,6 @@ const DroppableColumn = ({ column, tasks, onStatusChange, onDelete, isOver }) =>
         minHeight: '200px',
       }}
     >
-      {/* Column Header */}
       <div
         className="flex items-center justify-between"
         style={{ borderBottom: '1px solid var(--color-border)', paddingBottom: '0.75rem' }}
@@ -75,7 +74,7 @@ const DroppableColumn = ({ column, tasks, onStatusChange, onDelete, isOver }) =>
         </span>
       </div>
 
-      {/* Task Cards */}
+
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', flex: 1 }}>
         {tasks.length === 0 ? (
           <div
@@ -122,7 +121,7 @@ const TaskBoard = ({ tasks, onStatusChange, onDelete }) => {
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
-      activationConstraint: { distance: 8 }, // Prevent accidental drags
+      activationConstraint: { distance: 8 },
     })
   );
 
@@ -143,10 +142,10 @@ const TaskBoard = ({ tasks, onStatusChange, onDelete }) => {
     if (!over) return;
 
     const draggedTask = active.data.current?.task;
-    const targetColumnId = over.id; // The droppable column ID
+    const targetColumnId = over.id;
 
     if (!draggedTask || !COLUMNS.find((c) => c.id === targetColumnId)) return;
-    if (draggedTask.status === targetColumnId) return; // No change needed
+    if (draggedTask.status === targetColumnId) return;
 
     onStatusChange(draggedTask._id, targetColumnId);
   };
@@ -188,7 +187,7 @@ const TaskBoard = ({ tasks, onStatusChange, onDelete }) => {
         })}
       </div>
 
-      {/* Drag Overlay — renders a floating copy of the card while dragging */}
+
       <DragOverlay>
         {activeTask ? (
           <div style={{ opacity: 0.9, transform: 'rotate(3deg)' }}>

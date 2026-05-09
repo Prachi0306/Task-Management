@@ -7,7 +7,6 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 
-// A simple navigation header component to extract logic
 const Header = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -41,7 +40,6 @@ const Header = () => {
         </nav>
       </header>
 
-      {/* Logout Confirmation Modal */}
       {showLogoutConfirm && (
         <div style={{
           position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
@@ -88,7 +86,6 @@ function App() {
 
             <main className="animate-fade-in">
               <Routes>
-                {/* Public Routes */}
                 <Route path="/" element={
                   <div className="glass-panel flex flex-col items-center justify-center gap-4" style={{ padding: '4rem', textAlign: 'center' }}>
                     <h2 style={{ fontSize: '2.5rem', fontWeight: 700, background: 'linear-gradient(to right, #fff, #94a3b8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
@@ -105,7 +102,6 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
 
-                {/* Protected Routes */}
                 <Route element={<ProtectedRoute />}>
                   <Route path="/dashboard" element={<Dashboard />} />
                 </Route>
@@ -117,7 +113,5 @@ function App() {
     </AuthProvider>
   );
 }
-
-
 
 export default App;

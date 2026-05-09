@@ -13,7 +13,7 @@ const initRedis = async () => {
       reconnectStrategy: (retries) => {
         if (retries > 3) {
           logger.warn('Redis max reconnect attempts reached — running without cache');
-          return false; // Stop retrying
+          return false;
         }
         return Math.min(retries * 500, 3000);
       },

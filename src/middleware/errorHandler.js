@@ -27,20 +27,15 @@ const handleJWTExpiredError = () => {
 const errorHandler = (err, req, res, _next) => {
   let error = { ...err, message: err.message, stack: err.stack };
 
-  // Mongoose bad ObjectId
   if (err.name === 'CastError') error = handleCastError(err);
-  // Mongoose duplicate key
   if (err.code === 11000) error = handleDuplicateKeyError(err);
-  // Mongoose validation
   if (err.name === 'ValidationError') error = handleValidationError(err);
-  // JWT errors
   if (err.name === 'JsonWebTokenError') error = handleJWTError();
   if (err.name === 'TokenExpiredError') error = handleJWTExpiredError();
 
   const statusCode = error.statusCode || 500;
   const isOperational = error.isOperational || false;
 
-  // Log the error
   if (!isOperational || statusCode >= 500) {
     logger.error(`${statusCode} — ${error.message}`, {
       method: req.method,
@@ -55,7 +50,6 @@ const errorHandler = (err, req, res, _next) => {
     });
   }
 
-  // Build response
   const response = {
     success: false,
     status: error.status || 'error',

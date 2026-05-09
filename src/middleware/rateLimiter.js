@@ -14,7 +14,7 @@ const createLimiter = (options) => {
     });
   } catch (err) {
     logger.warn('Redis unavailable for rate limiting — falling back to in-memory store');
-    store = undefined; // express-rate-limit uses MemoryStore by default
+    store = undefined;
   }
 
   return rateLimit({
@@ -31,14 +31,14 @@ const createLimiter = (options) => {
 };
 
 const generalLimiter = createLimiter({
-  windowMs: 15 * 60 * 1000, // 15 minutes
+  windowMs: 15 * 60 * 1000,
   max: 1000,
   prefix: 'rl:general:',
   message: 'Too many requests from this IP, please try again after 15 minutes.',
 });
 
 const authLimiter = createLimiter({
-  windowMs: 15 * 60 * 1000, // 15 minutes
+  windowMs: 15 * 60 * 1000,
   max: 5,
   prefix: 'rl:auth:',
   message: 'Too many authentication attempts, please try again after 15 minutes.',

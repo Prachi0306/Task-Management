@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 
 jest.setTimeout(30000);
 
-// Mock the cache service globally so integration tests don't need Redis
+
 jest.mock('../src/services/cache.service', () => ({
   get: jest.fn().mockResolvedValue(null),
   set: jest.fn().mockResolvedValue(),
@@ -11,7 +11,7 @@ jest.mock('../src/services/cache.service', () => ({
   invalidatePattern: jest.fn().mockResolvedValue(),
 }));
 
-// Mock the rate limiter to avoid Redis dependency during tests
+
 jest.mock('../src/middleware/rateLimiter', () => ({
   generalLimiter: (_req, _res, next) => next(),
   authLimiter: (_req, _res, next) => next(),

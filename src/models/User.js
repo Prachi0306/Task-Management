@@ -54,14 +54,14 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-// Hash password before saving
+
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
   this.password = await bcrypt.hash(this.password, SALT_ROUNDS);
   next();
 });
 
-// Instance method — compare candidate password with stored hash
+
 userSchema.methods.comparePassword = async function (candidatePassword) {
   return bcrypt.compare(candidatePassword, this.password);
 };

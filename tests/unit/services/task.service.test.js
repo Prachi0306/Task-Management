@@ -63,7 +63,7 @@ describe('TaskService Unit Tests', () => {
       const mockTask = { _id: 'task1', status: 'To-Do', createdBy: { _id: 'user1' }, assignedTo: { _id: 'user2' } };
       taskRepository.findById.mockResolvedValue(mockTask);
 
-      // 'user3' is neither admin, creator, nor assignee
+
       await expect(taskService.updateStatus('task1', 'user3', 'user', 'In-Progress')).rejects.toThrow('You do not have permission');
     });
   });

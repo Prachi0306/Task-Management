@@ -11,7 +11,6 @@ export const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    // Only connect if the user is authenticated and we have a token
     const token = localStorage.getItem('token');
     if (!user || !token) {
       if (socket) {
@@ -21,7 +20,6 @@ export const SocketProvider = ({ children }) => {
       return;
     }
 
-    // Initialize socket connection
     const socketInstance = io('http://localhost:5000', {
       auth: { token },
       transports: ['websocket'],
@@ -37,7 +35,6 @@ export const SocketProvider = ({ children }) => {
 
     setSocket(socketInstance);
 
-    // Cleanup on unmount or user change
     return () => {
       socketInstance.disconnect();
     };

@@ -9,7 +9,7 @@ const Dashboard = () => {
   const [showNewTaskModal, setShowNewTaskModal] = useState(false);
   const [showFilterMenu, setShowFilterMenu] = useState(false);
   
-  // New Task Form State
+  
   const [newTaskTitle, setNewTaskTitle] = useState('');
   const [newTaskDesc, setNewTaskDesc] = useState('');
   const [newTaskPriority, setNewTaskPriority] = useState('Medium');
@@ -17,9 +17,8 @@ const Dashboard = () => {
 
   const { 
     tasks, loading, error, filters, setFilters, updateStatus, addTask, removeTask 
-  } = useTasks({ limit: 50 }); // fetch up to 50 for the board view
+  } = useTasks({ limit: 50 });
 
-  // Debounced live search — triggers 400ms after user stops typing
   const debounceRef = useRef(null);
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
@@ -57,7 +56,7 @@ const Dashboard = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       
-      {/* Top Action Bar */}
+      
       <div className="glass-panel flex items-center justify-between" style={{ padding: '1rem 1.5rem', flexWrap: 'wrap', gap: '1rem', zIndex: 10, position: 'relative' }}>
         <div className="flex items-center gap-2" style={{ flex: 1, minWidth: '250px' }}>
           <div style={{ position: 'relative', width: '100%', maxWidth: '400px' }}>
@@ -135,10 +134,10 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Analytics Panel */}
+
       <StatsPanel refreshKey={tasks} />
 
-      {/* Main Board Area */}
+
       {error && (
         <div style={{ padding: '1rem', background: 'rgba(239,68,68,0.1)', color: '#fca5a5', borderRadius: '8px', border: '1px solid rgba(239,68,68,0.3)' }}>
           {error}
@@ -157,7 +156,7 @@ const Dashboard = () => {
         />
       )}
 
-      {/* Simple Modal for New Task */}
+
       {showNewTaskModal && (
         <div style={{
           position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,

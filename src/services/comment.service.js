@@ -10,10 +10,10 @@ class CommentService {
       throw AppError.notFound('Task not found');
     }
 
-    // Extract @mentions from text if not explicitly provided
+
     const parsedMentions = mentions || this._extractMentions(text);
 
-    // Validate that mentioned user IDs exist
+
     const validMentions = [];
     for (const mentionId of parsedMentions) {
       const user = await userRepository.findById(mentionId);
@@ -75,7 +75,6 @@ class CommentService {
   }
 
   _extractMentions(text) {
-    // Match MongoDB ObjectId patterns after @ symbol
     const mentionPattern = /@([0-9a-fA-F]{24})/g;
     const mentions = [];
     let match;

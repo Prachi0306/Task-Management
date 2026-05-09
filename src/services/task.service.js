@@ -56,7 +56,6 @@ class TaskService {
 
     const filter = {};
 
-    // Non-admin users only see tasks they created or are assigned to
     if (userRole !== 'admin') {
       filter.$or = [{ createdBy: userId }, { assignedTo: userId }];
     }
@@ -66,21 +65,18 @@ class TaskService {
     if (assignedTo) filter.assignedTo = assignedTo;
     if (createdBy) filter.createdBy = createdBy;
 
-    // Date range filtering
     if (dueDateStart || dueDateEnd) {
       filter.dueDate = {};
       if (dueDateStart) filter.dueDate.$gte = new Date(dueDateStart);
       if (dueDateEnd) filter.dueDate.$lte = new Date(dueDateEnd);
     }
 
-    // Search on title and description (supports partial matches)
     if (search) {
       const searchRegex = new RegExp(search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
       const searchCondition = [
         { title: { $regex: searchRegex } },
         { description: { $regex: searchRegex } },
       ];
-      // Merge with existing $or (user scoping) if present
       if (filter.$or) {
         filter.$and = [{ $or: filter.$or }, { $or: searchCondition }];
         delete filter.$or;
@@ -89,10 +85,8 @@ class TaskService {
       }
     }
 
-    // Build sort object
     let sort = {};
     if (sortBy === 'priority') {
-      // Custom priority sorting since string sort won't give logical order
       sort = { priority: sortOrder === 'asc' ? 1 : -1 };
     } else {
       sort[sortBy] = sortOrder === 'asc' ? 1 : -1;
@@ -100,7 +94,6 @@ class TaskService {
 
     const skip = (page - 1) * limit;
 
-    // Construct cache key based on user and query
     const cacheKey = `tasks:user:${userId}:${JSON.stringify(queryParams)}`;
     
     const cachedResult = await cacheService.get(cacheKey);
@@ -139,12 +132,10 @@ class TaskService {
       throw AppError.forbidden('Only the task creator or an admin can update this task');
     }
 
-    // Validate status transition if status is being changed
     if (updateData.status && updateData.status !== task.status) {
       this._validateTransition(task.status, updateData.status);
     }
 
-    // Build activity log entries for changed fields
     const logEntries = [];
     for (const [field, newValue] of Object.entries(updateData)) {
       const oldValue = task[field];
@@ -172,7 +163,6 @@ class TaskService {
 
     await this._invalidateTaskCache(userId, taskId);
 
-    // Emit event if there are changes and the task has an assignee
     if (logEntries.length > 0 && updated.assignedTo) {
       emitToUser(updated.assignedTo._id, 'task_updated', {
         message: `Task "${updated.title}" has been updated`,
@@ -232,7 +222,6 @@ class TaskService {
 
     await this._invalidateTaskCache(userId, taskId);
 
-    // Notify the assignee if someone else changed the status
     if (updatedTask.assignedTo && updatedTask.assignedTo._id.toString() !== userId) {
       emitToUser(updatedTask.assignedTo._id, 'task_status_changed', {
         message: `Status of "${updatedTask.title}" changed to ${newStatus}`,
@@ -240,7 +229,6 @@ class TaskService {
       });
     }
     
-    // Notify the creator if the assignee changed the status
     if (updatedTask.createdBy._id.toString() !== userId) {
       emitToUser(updatedTask.createdBy._id, 'task_status_changed', {
         message: `Status of "${updatedTask.title}" changed to ${newStatus}`,
@@ -252,11 +240,8 @@ class TaskService {
   }
 
   async _invalidateTaskCache(userId, taskId = null) {
-    // Clear user's list caches
     await cacheService.invalidatePattern(`tasks:user:${userId}:*`);
-    // Clear admin lists just in case
     await cacheService.invalidatePattern('tasks:user:admin:*');
-    // Clear specific task cache
     if (taskId) {
       await cacheService.del(`task:${taskId}`);
     }

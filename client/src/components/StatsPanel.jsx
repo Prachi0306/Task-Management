@@ -110,7 +110,6 @@ const StatsPanel = ({ refreshKey }) => {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-      {/* KPI Row */}
       <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
         <KpiCard icon={<AlertCircle size={24} color="#6366f1" />} label="To Do" value={todoCount} color="#6366f1" />
         <KpiCard icon={<Clock size={24} color="#f59e0b" />} label="In Progress" value={progressCount} color="#f59e0b" />
@@ -118,9 +117,8 @@ const StatsPanel = ({ refreshKey }) => {
         <KpiCard icon={<AlertTriangle size={24} color="#ef4444" />} label="Overdue" value={stats.overdue} color="#ef4444" />
       </div>
 
-      {/* Charts Row */}
+
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
-        {/* Priority Distribution Pie */}
         <div className="glass-panel" style={{ padding: '1.5rem' }}>
           <h3 style={{ fontSize: '1rem', fontWeight: 600, marginBottom: '1rem' }}>Priority Distribution</h3>
           <ResponsiveContainer width="100%" height={220}>
@@ -147,7 +145,7 @@ const StatsPanel = ({ refreshKey }) => {
           </ResponsiveContainer>
         </div>
 
-        {/* Weekly Completion Bar Chart */}
+
         <div className="glass-panel" style={{ padding: '1.5rem' }}>
           <h3 style={{ fontSize: '1rem', fontWeight: 600, marginBottom: '1rem' }}>Tasks Completed (Last 8 Weeks)</h3>
           <ResponsiveContainer width="100%" height={220}>

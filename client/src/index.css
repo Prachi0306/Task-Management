@@ -1,7 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
 
 :root {
-  /* Dynamic Space/Galaxy Color Palette */
   --color-bg-deep: #0a0b10;
   --color-bg-panel: rgba(22, 24, 35, 0.6);
   --color-primary: #6d28d9;
@@ -15,18 +14,15 @@
   --color-border: rgba(255, 255, 255, 0.08);
   --color-border-focus: rgba(255, 255, 255, 0.2);
 
-  /* Status Colors */
   --status-todo: #fbbf24;
   --status-progress: #3b82f6;
   --status-completed: #10b981;
 
-  /* Glassmorphism */
   --glass-bg: rgba(15, 17, 26, 0.55);
   --glass-border: 1px solid rgba(255, 255, 255, 0.05);
   --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
   --glass-blur: blur(12px);
 
-  /* Transitions */
   --transition-fast: 0.15s ease-in-out;
   --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-bounce: 0.5s cubic-bezier(0.68, -0.55, 0.26, 1.55);
@@ -45,14 +41,12 @@ body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
-  /* Premium dark background with a subtle radial gradient */
   background-image: 
     radial-gradient(circle at 15% 50%, rgba(109, 40, 217, 0.15), transparent 25%),
     radial-gradient(circle at 85% 30%, rgba(14, 165, 233, 0.15), transparent 25%);
   background-attachment: fixed;
 }
 
-/* Glass Panel Utility */
 .glass-panel {
   background: var(--glass-bg);
   backdrop-filter: var(--glass-blur);
@@ -62,7 +56,6 @@ body {
   border-radius: 16px;
 }
 
-/* Button Utility */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -102,7 +95,6 @@ body {
   border-color: var(--color-border-focus);
 }
 
-/* Input Utility */
 .input-field {
   width: 100%;
   background: rgba(0, 0, 0, 0.2);
@@ -121,7 +113,6 @@ body {
   box-shadow: 0 0 0 3px var(--color-primary-glow);
 }
 
-/* Scrollbar styling */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -140,7 +131,6 @@ body {
   background: var(--color-text-muted);
 }
 
-/* Layout Utilities */
 .container {
   max-width: 1200px;
   margin: 0 auto;
@@ -155,7 +145,6 @@ body {
 .gap-2 { gap: 8px; }
 .gap-4 { gap: 16px; }
 
-/* Micro-animations */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }

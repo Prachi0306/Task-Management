@@ -28,12 +28,10 @@ export const useTasks = (initialFilters = {}) => {
     fetchTasks();
   }, [fetchTasks]);
 
-  // Real-time socket subscriptions
   useEffect(() => {
     if (!socket) return;
 
     const handleTaskAssigned = (data) => {
-      // Add the newly assigned task to the top of the list if it's not already there
       setTasks((prev) => {
         if (prev.find((t) => t._id === data.task._id)) return prev;
         return [data.task, ...prev];
@@ -41,7 +39,6 @@ export const useTasks = (initialFilters = {}) => {
     };
 
     const handleTaskUpdated = (data) => {
-      // Update the specific task in the list
       setTasks((prev) =>
         prev.map((t) => (t._id === data.task._id ? data.task : t))
       );
@@ -69,7 +66,6 @@ export const useTasks = (initialFilters = {}) => {
   };
 
   const updateStatus = async (taskId, status) => {
-    // Optimistic update
     setTasks((prev) =>
       prev.map((t) => (t._id === taskId ? { ...t, status } : t))
     );
@@ -77,7 +73,6 @@ export const useTasks = (initialFilters = {}) => {
     try {
       await taskService.updateTaskStatus(taskId, status);
     } catch (err) {
-      // Revert on failure
       fetchTasks();
       throw err.response?.data?.message || 'Failed to update status';
     }

@@ -3,7 +3,7 @@ const userRepository = require('../../../src/repositories/user.repository');
 const jwt = require('../../../src/utils/jwt');
 const AppError = require('../../../src/utils/AppError');
 
-// Mock external dependencies
+
 jest.mock('../../../src/repositories/user.repository');
 jest.mock('../../../src/utils/jwt');
 
