@@ -32,7 +32,7 @@ const createLimiter = (options) => {
 
 const generalLimiter = createLimiter({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100,
+  max: 1000,
   prefix: 'rl:general:',
   message: 'Too many requests from this IP, please try again after 15 minutes.',
 });

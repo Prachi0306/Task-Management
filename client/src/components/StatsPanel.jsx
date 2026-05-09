@@ -57,7 +57,7 @@ const CustomTooltip = ({ active, payload, label }) => {
   return null;
 };
 
-const StatsPanel = () => {
+const StatsPanel = ({ refreshKey }) => {
   const [stats, setStats] = useState(null);
   const [timeline, setTimeline] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -83,7 +83,7 @@ const StatsPanel = () => {
       }
     };
     load();
-  }, []);
+  }, [refreshKey]);
 
   if (loading) {
     return (

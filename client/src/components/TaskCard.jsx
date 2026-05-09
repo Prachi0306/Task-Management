@@ -1,6 +1,6 @@
 import React from 'react';
 import { format } from 'date-fns';
-import { Calendar, AlertCircle, Clock, CheckCircle } from 'lucide-react';
+import { Calendar, AlertCircle, Clock, CheckCircle, Trash2 } from 'lucide-react';
 
 const priorityColors = {
   Low: '#10b981',    // Emerald
@@ -34,8 +34,17 @@ const TaskCard = ({ task, onStatusChange, onDelete }) => {
         <h4 style={{ fontWeight: 600, fontSize: '1rem', color: '#fff', margin: 0, wordBreak: 'break-word' }}>
           {task.title}
         </h4>
-        <div style={{ marginLeft: '8px' }}>
+        <div className="flex gap-2 items-center">
           {statusIcons[task.status]}
+          <button 
+            onClick={(e) => { e.stopPropagation(); if(window.confirm('Delete this task?')) onDelete(task._id); }}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', color: 'var(--color-text-muted)', display: 'flex' }}
+            title="Delete Task"
+            onMouseOver={(e) => e.currentTarget.style.color = '#ef4444'}
+            onMouseOut={(e) => e.currentTarget.style.color = 'var(--color-text-muted)'}
+          >
+            <Trash2 size={16} />
+          </button>
         </div>
       </div>
 

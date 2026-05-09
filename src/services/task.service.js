@@ -73,9 +73,20 @@ class TaskService {
       if (dueDateEnd) filter.dueDate.$lte = new Date(dueDateEnd);
     }
 
-    // Full-text search on title and description
+    // Search on title and description (supports partial matches)
     if (search) {
-      filter.$text = { $search: search };
+      const searchRegex = new RegExp(search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+      const searchCondition = [
+        { title: { $regex: searchRegex } },
+        { description: { $regex: searchRegex } },
+      ];
+      // Merge with existing $or (user scoping) if present
+      if (filter.$or) {
+        filter.$and = [{ $or: filter.$or }, { $or: searchCondition }];
+        delete filter.$or;
+      } else {
+        filter.$or = searchCondition;
+      }
     }
 
     // Build sort object

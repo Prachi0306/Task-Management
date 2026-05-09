@@ -84,11 +84,10 @@ export const useTasks = (initialFilters = {}) => {
   };
 
   const removeTask = async (taskId) => {
-    setTasks((prev) => prev.filter((t) => t._id !== taskId));
     try {
       await taskService.deleteTask(taskId);
+      setTasks((prev) => prev.filter((t) => t._id !== taskId));
     } catch (err) {
-      fetchTasks();
       throw err.response?.data?.message || 'Failed to delete task';
     }
   };

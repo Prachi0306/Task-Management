@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route, Link, useNavigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { SocketProvider } from './contexts/SocketContext';
@@ -11,32 +11,70 @@ import Dashboard from './pages/Dashboard';
 const Header = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
-  const handleLogout = () => {
+  const confirmLogout = () => {
+    setShowLogoutConfirm(false);
     logout();
     navigate('/login');
   };
 
   return (
-    <header className="flex justify-between items-center glass-panel" style={{ padding: '1rem 2rem', marginBottom: '2rem' }}>
-      <Link to="/" style={{ color: 'inherit', textDecoration: 'none' }}>
-        <h1 style={{ fontSize: '1.5rem', fontWeight: 600 }}>TaskNexus</h1>
-      </Link>
-      <nav className="flex gap-4 items-center">
-        {user ? (
-          <>
-            <span style={{ color: 'var(--color-text-muted)' }}>Hello, {user.name}</span>
-            <button onClick={handleLogout} className="btn btn-secondary">Logout</button>
-            <Link to="/dashboard" className="btn btn-primary">Dashboard</Link>
-          </>
-        ) : (
-          <>
-            <Link to="/login" className="btn btn-secondary">Login</Link>
-            <Link to="/register" className="btn btn-primary">Sign Up</Link>
-          </>
-        )}
-      </nav>
-    </header>
+    <>
+      <header className="flex justify-between items-center glass-panel" style={{ padding: '1rem 2rem', marginBottom: '2rem' }}>
+        <Link to="/" style={{ color: 'inherit', textDecoration: 'none' }}>
+          <h1 style={{ fontSize: '1.5rem', fontWeight: 600 }}>TaskNexus</h1>
+        </Link>
+        <nav className="flex gap-4 items-center">
+          {user ? (
+            <>
+              <span style={{ color: 'var(--color-text-muted)' }}>Hello, {user.name}</span>
+              <button onClick={() => setShowLogoutConfirm(true)} className="btn btn-secondary">Logout</button>
+              <Link to="/dashboard" className="btn btn-primary">Dashboard</Link>
+            </>
+          ) : (
+            <>
+              <Link to="/login" className="btn btn-secondary">Login</Link>
+              <Link to="/register" className="btn btn-primary">Sign Up</Link>
+            </>
+          )}
+        </nav>
+      </header>
+
+      {/* Logout Confirmation Modal */}
+      {showLogoutConfirm && (
+        <div style={{
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+          background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(4px)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          zIndex: 1000,
+        }}>
+          <div className="glass-panel animate-fade-in" style={{ width: '100%', maxWidth: '400px', padding: '2rem', textAlign: 'center' }}>
+            <div style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}>👋</div>
+            <h3 style={{ fontSize: '1.3rem', fontWeight: 600, marginBottom: '0.5rem' }}>Confirm Logout</h3>
+            <p style={{ color: 'var(--color-text-muted)', marginBottom: '1.5rem', fontSize: '0.95rem' }}>
+              Are you sure you want to sign out?
+            </p>
+            <div className="flex gap-4">
+              <button
+                className="btn btn-secondary"
+                style={{ flex: 1, padding: '10px' }}
+                onClick={() => setShowLogoutConfirm(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="btn"
+                style={{ flex: 1, padding: '10px', background: '#ef4444', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 500 }}
+                onClick={confirmLogout}
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 
