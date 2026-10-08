@@ -8,6 +8,7 @@ export const useTasks = (initialFilters = {}) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [filters, setFilters] = useState(initialFilters);
+  const [statsTrigger, setStatsTrigger] = useState(0);
   const socket = useSocket();
 
   const fetchTasks = useCallback(async () => {
@@ -36,12 +37,14 @@ export const useTasks = (initialFilters = {}) => {
         if (prev.find((t) => t._id === data.task._id)) return prev;
         return [data.task, ...prev];
       });
+      setStatsTrigger((prev) => prev + 1);
     };
 
     const handleTaskUpdated = (data) => {
       setTasks((prev) =>
         prev.map((t) => (t._id === data.task._id ? data.task : t))
       );
+      setStatsTrigger((prev) => prev + 1);
     };
 
     socket.on('task_assigned', handleTaskAssigned);
@@ -59,6 +62,7 @@ export const useTasks = (initialFilters = {}) => {
     try {
       const newTask = await taskService.createTask(taskData);
       setTasks((prev) => [newTask, ...prev]);
+      setStatsTrigger((prev) => prev + 1);
       return newTask;
     } catch (err) {
       throw err.response?.data?.message || 'Failed to create task';
@@ -72,6 +76,7 @@ export const useTasks = (initialFilters = {}) => {
 
     try {
       await taskService.updateTaskStatus(taskId, status);
+      setStatsTrigger((prev) => prev + 1);
     } catch (err) {
       fetchTasks();
       throw err.response?.data?.message || 'Failed to update status';
@@ -82,6 +87,7 @@ export const useTasks = (initialFilters = {}) => {
     try {
       await taskService.deleteTask(taskId);
       setTasks((prev) => prev.filter((t) => t._id !== taskId));
+      setStatsTrigger((prev) => prev + 1);
     } catch (err) {
       throw err.response?.data?.message || 'Failed to delete task';
     }
@@ -98,5 +104,6 @@ export const useTasks = (initialFilters = {}) => {
     updateStatus,
     removeTask,
     refreshTasks: fetchTasks,
+    statsTrigger,
   };
 };

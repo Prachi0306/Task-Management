@@ -153,3 +153,9 @@ body {
 .animate-fade-in {
   animation: fadeIn 0.4s var(--transition-smooth) forwards;
 }
+
+select.input-field option {
+  background-color: var(--color-bg-deep);
+  color: var(--color-text-main);
+}
+

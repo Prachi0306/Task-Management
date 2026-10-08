@@ -16,7 +16,7 @@ const Dashboard = () => {
   const [newTaskDueDate, setNewTaskDueDate] = useState('');
 
   const { 
-    tasks, loading, error, filters, setFilters, updateStatus, addTask, removeTask 
+    tasks, loading, error, filters, setFilters, updateStatus, addTask, removeTask, statsTrigger
   } = useTasks({ limit: 50 });
 
   const debounceRef = useRef(null);
@@ -35,6 +35,13 @@ const Dashboard = () => {
   const handleCreateTask = async (e) => {
     e.preventDefault();
     if (!newTaskTitle.trim()) return;
+
+    if (newTaskDueDate) {
+      const year = new Date(newTaskDueDate).getFullYear();
+      if (year < 1000 || year > 9999) {
+        return alert("Please enter a valid 4-digit year for the Due Date.");
+      }
+    }
     
     try {
       await addTask({ 
@@ -135,7 +142,7 @@ const Dashboard = () => {
       </div>
 
 
-      <StatsPanel refreshKey={tasks} />
+      <StatsPanel refreshKey={statsTrigger} />
 
 
       {error && (
@@ -188,7 +195,8 @@ const Dashboard = () => {
                   <label>Due Date (Optional)</label>
                   <input 
                     type="date" 
-                    className="input-field" 
+                    className="input-field"
+                    max="9999-12-31"
                     value={newTaskDueDate} 
                     onChange={e => setNewTaskDueDate(e.target.value)}
                     style={{ colorScheme: 'dark' }}
