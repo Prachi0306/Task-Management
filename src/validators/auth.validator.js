@@ -39,4 +39,29 @@ const login = {
   }),
 };
 
-module.exports = { register, login };
+const verifyEmail = {
+  body: Joi.object({
+    email: Joi.string().trim().lowercase().email().required()
+      .messages({
+        'string.email': 'Please provide a valid email address',
+        'any.required': 'Email is required',
+      }),
+    code: Joi.string().length(6).required()
+      .messages({
+        'string.length': 'Verification code must be 6 digits',
+        'any.required': 'Verification code is required',
+      }),
+  }),
+};
+
+const resendVerification = {
+  body: Joi.object({
+    email: Joi.string().trim().lowercase().email().required()
+      .messages({
+        'string.email': 'Please provide a valid email address',
+        'any.required': 'Email is required',
+      }),
+  }),
+};
+
+module.exports = { register, login, verifyEmail, resendVerification };

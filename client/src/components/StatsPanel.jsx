@@ -121,8 +121,8 @@ const StatsPanel = ({ refreshKey }) => {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
         <div className="glass-panel" style={{ padding: '1.5rem' }}>
           <h3 style={{ fontSize: '1rem', fontWeight: 600, marginBottom: '1rem' }}>Priority Distribution</h3>
-          <ResponsiveContainer width="100%" height={220}>
-            {totalTasks > 0 ? (
+          {totalTasks > 0 ? (
+            <ResponsiveContainer width="100%" height={220}>
               <PieChart>
                 <Pie
                   data={priorityData}
@@ -143,21 +143,21 @@ const StatsPanel = ({ refreshKey }) => {
                   formatter={(value) => <span style={{ color: '#94a3b8', fontSize: '0.8rem' }}>{value}</span>}
                 />
               </PieChart>
-            ) : (
-              <div className="flex-col items-center justify-center" style={{ height: '100%', color: 'var(--color-text-muted)', textAlign: 'center', gap: '0.5rem' }}>
-                <AlertCircle size={32} style={{ opacity: 0.5 }} />
-                <p style={{ margin: 0, fontWeight: 500 }}>No tasks available</p>
-                <p style={{ margin: 0, fontSize: '0.85rem', opacity: 0.7 }}>Create tasks to see priority distribution.</p>
-              </div>
-            )}
-          </ResponsiveContainer>
+            </ResponsiveContainer>
+          ) : (
+            <div className="flex-col items-center justify-center" style={{ height: '220px', width: '100%', color: 'var(--color-text-muted)', textAlign: 'center', gap: '0.5rem', padding: '1rem', boxSizing: 'border-box' }}>
+              <AlertCircle size={32} style={{ opacity: 0.5 }} />
+              <p style={{ margin: 0, fontWeight: 500, whiteSpace: 'nowrap' }}>No tasks available</p>
+              <p style={{ margin: 0, fontSize: '0.85rem', opacity: 0.7, maxWidth: '200px', lineHeight: 1.4 }}>Create tasks to see priority distribution.</p>
+            </div>
+          )}
         </div>
 
 
         <div className="glass-panel" style={{ padding: '1.5rem' }}>
           <h3 style={{ fontSize: '1rem', fontWeight: 600, marginBottom: '1rem' }}>Tasks Completed (Last 8 Weeks)</h3>
-          <ResponsiveContainer width="100%" height={220}>
-            {timeline.length > 0 && timeline.some(t => t.completed > 0) ? (
+          {timeline.length > 0 && timeline.some(t => t.completed > 0) ? (
+            <ResponsiveContainer width="100%" height={220}>
               <BarChart data={timeline}>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
                 <XAxis dataKey="name" tick={{ fill: '#94a3b8', fontSize: 12 }} axisLine={false} tickLine={false} />
@@ -165,14 +165,14 @@ const StatsPanel = ({ refreshKey }) => {
                 <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.04)' }} />
                 <Bar dataKey="completed" fill="#6366f1" radius={[6, 6, 0, 0]} maxBarSize={40} />
               </BarChart>
-            ) : (
-              <div className="flex-col items-center justify-center" style={{ height: '100%', color: 'var(--color-text-muted)', textAlign: 'center', gap: '0.5rem' }}>
-                <CheckCircle size={32} style={{ opacity: 0.5 }} />
-                <p style={{ margin: 0, fontWeight: 500 }}>No completed tasks yet</p>
-                <p style={{ margin: 0, fontSize: '0.85rem', opacity: 0.7 }}>Tasks you complete will appear here.</p>
-              </div>
-            )}
-          </ResponsiveContainer>
+            </ResponsiveContainer>
+          ) : (
+            <div className="flex-col items-center justify-center" style={{ height: '220px', width: '100%', color: 'var(--color-text-muted)', textAlign: 'center', gap: '0.5rem', padding: '1rem', boxSizing: 'border-box' }}>
+              <CheckCircle size={32} style={{ opacity: 0.5 }} />
+              <p style={{ margin: 0, fontWeight: 500, whiteSpace: 'nowrap' }}>No completed tasks yet</p>
+              <p style={{ margin: 0, fontSize: '0.85rem', opacity: 0.7, maxWidth: '200px', lineHeight: 1.4 }}>Tasks you complete will appear here.</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

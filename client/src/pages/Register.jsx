@@ -32,9 +32,11 @@ const Register = () => {
 
     try {
       await register(name, email, password);
-      navigate('/dashboard', { replace: true });
+      navigate('/verify-email', { state: { email }, replace: true });
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to create account. Please try again.');
+      const data = err.response?.data;
+      const detailMsg = data?.details?.[0]?.message;
+      setError(detailMsg || data?.message || 'Failed to create account. Please try again.');
     } finally {
       setIsLoading(false);
     }
