@@ -19,7 +19,9 @@ export const useTasks = (initialFilters = {}) => {
       setTasks(data.tasks);
       setPagination(data.pagination);
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to fetch tasks');
+      const data = err.response?.data;
+      const detailMsg = data?.details?.[0]?.message;
+      setError(detailMsg || data?.message || 'Failed to fetch tasks');
     } finally {
       setLoading(false);
     }
@@ -65,7 +67,9 @@ export const useTasks = (initialFilters = {}) => {
       setStatsTrigger((prev) => prev + 1);
       return newTask;
     } catch (err) {
-      throw err.response?.data?.message || 'Failed to create task';
+      const data = err.response?.data;
+      const detailMsg = data?.details?.[0]?.message;
+      throw detailMsg || data?.message || 'Failed to create task';
     }
   };
 
@@ -79,7 +83,9 @@ export const useTasks = (initialFilters = {}) => {
       setStatsTrigger((prev) => prev + 1);
     } catch (err) {
       fetchTasks();
-      throw err.response?.data?.message || 'Failed to update status';
+      const data = err.response?.data;
+      const detailMsg = data?.details?.[0]?.message;
+      throw detailMsg || data?.message || 'Failed to update status';
     }
   };
 
@@ -89,7 +95,9 @@ export const useTasks = (initialFilters = {}) => {
       setTasks((prev) => prev.filter((t) => t._id !== taskId));
       setStatsTrigger((prev) => prev + 1);
     } catch (err) {
-      throw err.response?.data?.message || 'Failed to delete task';
+      const data = err.response?.data;
+      const detailMsg = data?.details?.[0]?.message;
+      throw detailMsg || data?.message || 'Failed to delete task';
     }
   };
 

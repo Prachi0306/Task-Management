@@ -176,7 +176,7 @@ const Dashboard = () => {
             <form onSubmit={handleCreateTask} className="flex-col gap-4">
               <div className="flex-col" style={{ gap: '6px' }}>
                 <label>Title</label>
-                <input required type="text" className="input-field" value={newTaskTitle} onChange={e => setNewTaskTitle(e.target.value)} />
+                <input required minLength={3} type="text" className="input-field" value={newTaskTitle} onChange={e => setNewTaskTitle(e.target.value)} />
               </div>
               <div className="flex-col" style={{ gap: '6px' }}>
                 <label>Description (Optional)</label>
