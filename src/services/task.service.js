@@ -1,5 +1,4 @@
 const taskRepository = require('../repositories/task.repository');
-const cacheService = require('./cache.service');
 const AppError = require('../utils/AppError');
 const { emitToUser } = require('../config/socket');
 
@@ -20,8 +19,6 @@ class TaskService {
 
     const populatedTask = await taskRepository.findById(task._id);
 
-    await this._invalidateTaskCache(userId);
-
     if (populatedTask.assignedTo) {
       emitToUser(populatedTask.assignedTo._id, 'task_assigned', {
         message: 'You have been assigned a new task',
@@ -33,15 +30,10 @@ class TaskService {
   }
 
   async getTaskById(taskId, userId, userRole) {
-    const cacheKey = `task:${taskId}`;
-    let task = await cacheService.get(cacheKey);
+    let task = await taskRepository.findById(taskId);
 
     if (!task) {
-      task = await taskRepository.findById(taskId);
-      if (!task) {
-        throw AppError.notFound('Task not found');
-      }
-      await cacheService.set(cacheKey, task);
+      throw AppError.notFound('Task not found');
     }
 
     if (userRole !== 'admin' && task.createdBy._id.toString() !== userId && (!task.assignedTo || task.assignedTo._id.toString() !== userId)) {
@@ -94,13 +86,6 @@ class TaskService {
 
     const skip = (page - 1) * limit;
 
-    const cacheKey = `tasks:user:${userId}:${JSON.stringify(queryParams)}`;
-    
-    const cachedResult = await cacheService.get(cacheKey);
-    if (cachedResult) {
-      return cachedResult;
-    }
-
     const { tasks, total } = await taskRepository.findWithFilters({
       filter,
       sort,
@@ -118,7 +103,6 @@ class TaskService {
       },
     };
 
-    await cacheService.set(cacheKey, result);
     return result;
   }
 
@@ -161,8 +145,6 @@ class TaskService {
 
     const updated = await taskRepository.updateById(taskId, update);
 
-    await this._invalidateTaskCache(userId, taskId);
-
     if (logEntries.length > 0 && updated.assignedTo) {
       emitToUser(updated.assignedTo._id, 'task_updated', {
         message: `Task "${updated.title}" has been updated`,
@@ -184,7 +166,6 @@ class TaskService {
     }
 
     await taskRepository.deleteById(taskId);
-    await this._invalidateTaskCache(userId, taskId);
     return { message: 'Task deleted successfully' };
   }
 
@@ -220,8 +201,6 @@ class TaskService {
 
     const updatedTask = await taskRepository.updateById(taskId, update);
 
-    await this._invalidateTaskCache(userId, taskId);
-
     if (updatedTask.assignedTo && updatedTask.assignedTo._id.toString() !== userId) {
       emitToUser(updatedTask.assignedTo._id, 'task_status_changed', {
         message: `Status of "${updatedTask.title}" changed to ${newStatus}`,
@@ -239,13 +218,7 @@ class TaskService {
     return updatedTask;
   }
 
-  async _invalidateTaskCache(userId, taskId = null) {
-    await cacheService.invalidatePattern(`tasks:user:${userId}:*`);
-    await cacheService.invalidatePattern('tasks:user:admin:*');
-    if (taskId) {
-      await cacheService.del(`task:${taskId}`);
-    }
-  }
+
 
   async getTaskActivity(taskId, userId, userRole) {
     const task = await taskRepository.findById(taskId);

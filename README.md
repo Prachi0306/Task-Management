@@ -8,7 +8,7 @@ A production-grade, full-stack Task Management System with real-time collaborati
 
 | Layer | Technologies |
 |---|---|
-| **Backend** | Node.js, Express, MongoDB, Mongoose, JWT, Socket.io, Redis |
+| **Backend** | Node.js, Express, MongoDB, Mongoose, JWT, Socket.io |
 | **Frontend** | React (Vite), Vanilla CSS, Recharts, dnd-kit |
 | **Testing** | Jest, Supertest, mongodb-memory-server |
 | **DevOps** | Docker, Docker Compose, GitHub Actions CI/CD |
@@ -23,8 +23,7 @@ A production-grade, full-stack Task Management System with real-time collaborati
 - **Real-Time Updates** — Socket.io for instant task assignment and status notifications
 - **Analytics Dashboard** — KPI cards, priority pie chart, weekly completion bar chart
 - **Search & Filtering** — Full-text search, multi-param filters, date ranges, pagination
-- **Caching** — Redis with automatic invalidation on mutations
-- **Rate Limiting** — Redis-backed rate limiting with graceful fallback
+- **Rate Limiting** — In-memory rate limiting with graceful fallback
 - **API Documentation** — Swagger UI at `/api/docs`
 - **Comments** — Threaded comments with @mention parsing
 
@@ -66,7 +65,7 @@ npm run test:coverage # Run with coverage report
 
 ```
 ├── src/
-│   ├── config/          # Database, Redis, Socket.io config
+│   ├── config/          # Database, Socket.io config
 │   ├── controllers/     # Request handlers
 │   ├── middleware/       # Auth, validation, rate limiting, error handling
 │   ├── models/          # Mongoose schemas
